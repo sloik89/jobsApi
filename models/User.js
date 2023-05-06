@@ -38,4 +38,8 @@ UserSchema.methods.createToken = function () {
     }
   );
 };
+UserSchema.methods.comparePassword = async function (pswd) {
+  const isMatch = await bcrypt.compare(pswd, this.password);
+  return isMatch;
+};
 module.exports = mongoose.model("User", UserSchema);

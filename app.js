@@ -8,12 +8,13 @@ const jobsRouter = require("./routes/jobs");
 // import middleware
 const notFound = require("./middleware/notfound");
 const errorHandler = require("./middleware/error-handler");
+const auth = require("./middleware/auth");
 // use of middleware
 app.use(express.json());
 
 //  routes
 app.use("/api/auth", authRouter);
-app.use("/api/jobs", jobsRouter);
+app.use("/api/jobs", auth, jobsRouter);
 app.use(notFound);
 app.use(errorHandler);
 const port = process.env.PORT || 5000;

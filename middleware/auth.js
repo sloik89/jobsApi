@@ -1,7 +1,17 @@
 const { UnauthenicatedError } = require("../errors");
 const jwt = require("jsonwebtoken");
 const authenticationMiddleware = async (req, res, next) => {
-  console.log("jestem w authceticaion middleware");
-  next();
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer")) {
+    throw new UnauthenicatedError("Authentication invalid");
+  }
+  const token = authHeader.split(" ")[1];
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { userId: payload.userId, name: payload.name };
+    next();
+  } catch (err) {
+    throw new UnauthenicatedError("Authentication invalid");
+  }
 };
 module.exports = authenticationMiddleware;
