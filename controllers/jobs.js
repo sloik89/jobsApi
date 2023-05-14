@@ -8,12 +8,12 @@ const getAllJobs = async (req, res) => {
 };
 const getJob = async (req, res) => {
   const { id } = req.params;
-  console.log(req.user);
-  const job = await Job.find({ _id: id, createdAt: req.user.userId });
+  console.log(req.user, id);
+  const job = await Job.findOne({ _id: id, createdBy: req.user.userId });
   if (!job) {
     throw new BadRequestError("Job can't found");
   }
-
+  console.log(job);
   res.status(StatusCodes.OK).json(job);
 };
 const createJob = async (req, res) => {
