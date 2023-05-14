@@ -7,7 +7,14 @@ const getAllJobs = async (req, res) => {
   res.status(StatusCodes.OK).json(jobs);
 };
 const getJob = async (req, res) => {
-  res.send("get job");
+  const { id } = req.params;
+  console.log(req.user);
+  const job = await Job.find({ _id: id, createdAt: req.user.userId });
+  if (!job) {
+    throw new BadRequestError("Job can't found");
+  }
+
+  res.status(StatusCodes.OK).json(job);
 };
 const createJob = async (req, res) => {
   const { company, position } = req.body;
@@ -20,10 +27,20 @@ const createJob = async (req, res) => {
   res.json({ job });
 };
 const updateJob = async (req, res) => {
-  res.send("update job");
+  console.log(req.params);
+  console.log(req.body);
+  const job = await Job.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.json({ job, msg: "Item updated" });
 };
 const deleteJob = async (req, res) => {
-  res.send("delete job");
+  const { id } = req.params;
+  const job = await Job.findOneAndDelete({
+    _id: id,
+    createdBy: req.user.userId,
+  });
+  res.json({ job, msg: "Item removed" });
 };
 module.exports = {
   getAllJobs,
