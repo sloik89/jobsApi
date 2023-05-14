@@ -5,12 +5,27 @@ const app = express();
 const connectDB = require("./db/connectDB");
 const authRouter = require("./routes/auth");
 const jobsRouter = require("./routes/jobs");
+// security packages
+const helmet = require("helmet");
+const cors = require("cors");
+const xss = require("xss-clean");
+const rateLimiter = require("express-rate-limit");
 // import middleware
 const notFound = require("./middleware/notfound");
 const errorHandler = require("./middleware/error-handler");
 const auth = require("./middleware/auth");
 // use of middleware
 app.use(express.json());
+app.set("trust proxy", 1);
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  })
+);
+app.use(helmet());
+app.use(cors());
+app.use(xss());
 
 //  routes
 app.use("/api/auth", authRouter);
