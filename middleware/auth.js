@@ -2,6 +2,7 @@ const { UnauthenicatedError } = require("../errors");
 const jwt = require("jsonwebtoken");
 const authenticationMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader || !authHeader.startsWith("Bearer")) {
     throw new UnauthenicatedError("Authentication invalid");
   }
